@@ -1,37 +1,229 @@
-/* src/pages/CaroPage.css */
-
+/* PAGE ROOT */
 .caroPage {
-    display: flex;
+    width: 100vw;
     height: 100vh;
-    padding: 16px; /* 👈 padding cho toàn page */
-    box-sizing: border-box;
-    /* background-color: #f6f6f6; */
-    gap: 16px;
-}
-
-.caroSidebar {
-    width: 320px;
-    background: white;
     padding: 16px;
-    border-radius: 10px;
+
+    display: flex;
+    gap: 16px;
+
+    box-sizing: border-box;
+    background: #f0f2f5;
 }
 
+/* LEFT SIDEBAR */
+.caroMatchInfo {
+    flex: 1;
+    min-width: 260px;
+
+    padding: 16px;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.caroMatchInfo p {
+    margin: 5px 0;
+    font-size: 15px;
+    color: #333;
+}
+
+.matchHistory {
+    padding: 0px 16px;
+    background: #ffffff;
+    margin-top: 16px;
+    flex: 100%;
+    overflow-y: auto;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    max-height: 100%;
+    height: fit-content;
+}
+
+.matchCard {
+    padding: 12px;
+    margin-bottom: 8px;
+    background: #f9f9f9;
+    border-radius: 6px;
+}
+.matchCard:hover {
+    background: #f1f1f1;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.matchId {
+    font-size: 14px;
+    font-weight: 700;
+    color: #666;
+    width: 28px;
+    text-align: center;
+}
+
+.matchPlayer {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.matchStatus {
+    font-size: 11px;
+    font-weight: 700;
+    color: #b00020;
+    background: #fdecea;
+    padding: 4px 6px;
+    border-radius: 4px;
+}
+
+/* GAME MID */
 .caroGame {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*
+  QUAN TRỌNG:
+  - aspect-ratio giữ hình vuông
+  - height: 100% ăn theo caroPage (trừ padding)
+*/
+.gameContainer {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+
+    background: #ffffff;
+    border-radius: 12px;
+    border: 2px solid #333;
+
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+}
+
+/* Phaser canvas luôn full container */
+.gameContainer canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+.caroUserList {
+    width: 240px;
+    padding: 16px;
+    border-right: 1px solid #ddd;
+    background: #fafafa;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.userListTitle {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.userList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* USER CARD */
+.userCard {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 10px 12px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.userCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* RANK */
+.userRank {
+    font-size: 14px;
+    font-weight: 700;
+    color: #666;
+    width: 28px;
+    text-align: center;
+}
+
+/* INFO */
+.userInfo {
     flex: 1;
     display: flex;
-    align-items: center; /* căn giữa theo chiều dọc */
-    justify-content: center; /* căn giữa theo chiều ngang */
-    background: #eaeaea;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ccc;
-    overflow: hidden;
+    flex-direction: column;
 }
-.gameContainer {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    aspect-ratio: 1/1; /* Giữ tỉ lệ vuông */
+
+.userName {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.userStats {
+    font-size: 13px;
+    color: #555;
+}
+
+.userStats span {
+    font-weight: 600;
+}
+
+/* STATUS */
+.userStatus {
+    font-size: 11px;
+    font-weight: 700;
+    color: #b00020;
+    background: #fdecea;
+    padding: 4px 6px;
+    border-radius: 4px;
+}
+
+/* ELIMINATED STATE */
+.eliminated {
+    opacity: 0.55;
+    background: #f5f5f5;
+}
+
+/* USER SELECTED */
+.selected {
+    border: 2px solid #1976d2;
+    background: #e3f2fd;
+    /* transition: border 1s ease-in-out; */
+}
+
+/* MATCH BUTTON */
+.matchButton {
+    margin-top: 16px;
+    padding: 12px;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    background: #1976d2;
+    color: white;
+
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+
+.matchButton:disabled {
+    background: #9e9e9e;
+    cursor: not-allowed;
 }

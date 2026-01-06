@@ -6,15 +6,15 @@ export default class CaroScene extends Phaser.Scene {
     moves: any[] = [];
     moveIndex = 0;
     defaultZoom = 1;
-    moveDelay = 50;
+    moveDelay = 300;
     board: number[][] = []; // bảng trạng thái trò chơi
     // 1: player 1, 2: player 2, 0: empty
     // -1: blocked cell
     nearwinBoard: number[][] = []; // bảng trạng thái các ô gần thắng
 
     preload() {
-        this.load.image("p1", "assets/x.png");
-        this.load.image("p2", "assets/o.png");
+        this.load.image("p1", "/assets/x.png");
+        this.load.image("p2", "/assets/o.png");
     }
     constructor() {
         super("CaroScene");
@@ -382,7 +382,8 @@ export default class CaroScene extends Phaser.Scene {
                     break;
                 }
                 if (this.board[nx][ny] === player) {
-                    currentCount++;
+                    if (negativeEmptyCell.length == 0) currentCount++;
+                    else negativeCount++;
                 } else if (
                     this.board[nx][ny] === 0 &&
                     negativeEmptyCell.length < 1

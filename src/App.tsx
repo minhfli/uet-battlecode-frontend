@@ -7,7 +7,7 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<MenuPage />} />
-                <Route path="/caro" element={<CaroPage />} />
+                <Route path="/caro/:tourId" element={<CaroPage />} />
             </Routes>
         </BrowserRouter>
     );
