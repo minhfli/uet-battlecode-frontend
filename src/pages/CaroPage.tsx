@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import PhaserWrapper from "../game/PhaserWrapper";
 import styles from "./CaroPage.module.css";
+import { BACKEND } from "../config/constant";
 
 type User = {
     id: number;
@@ -57,14 +58,16 @@ export default function CaroPage() {
         const [user1, user2] = selectedUsers;
 
         try {
-            const res = await fetch("https://example.com/api/match", {
+            const res = await fetch(`${BACKEND}/matches/1v1`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    player1: user1,
-                    player2: user2,
+                    problemCode: "tic-tac-toe-5",
+                    submission1Id: user1,
+                    submission2Id: user2,
+                    tournamaentId: tourId,
                 }),
             });
 
@@ -75,11 +78,28 @@ export default function CaroPage() {
             const result = await res.json();
 
             alert(
-                `Match created successfully!\nPlayers: ${user1} vs ${user2}\nMatch ID: ${
-                    result.matchId ?? "N/A"
-                }`
+                `Match created successfully!\nMatch ID: ${result.id ?? "N/A"}`
             );
+            if (result.id) {
+                const res = await fetch(
+                    `${BACKEND}/matches/${result.id}/start`,
+                    {
+                        method: "POST",
+                    }
+                );
+                if (!res.ok) {
+                    throw new Error("Start match failed");
+                }
+                alert(`Match started successfully!`);
+            }
 
+            // while (true) {
+            //     const res = await fetch(`${BACKEND}/matches/${result.id}`);
+            //     const statusData = await res.json();
+            //     if (statusData.status !== "COMPLETED") {
+            //         await new Promise((r) => setTimeout(r, 2000));
+            //     } else break;
+            // }
             setSelectedUsers([]);
         } catch (err) {
             alert("Failed to create match.");

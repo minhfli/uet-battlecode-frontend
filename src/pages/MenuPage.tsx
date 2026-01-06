@@ -49,7 +49,7 @@ export default function MenuPage() {
         {
             id: 1,
             date: new Date(2025, 11, 25),
-            type: "caro",
+            type: "tic-tac-toe-5",
             name: "Caro Tournament 01",
             description: "2025 Caro Tournament - Join Now!",
             status: "PLAYING",
@@ -57,7 +57,7 @@ export default function MenuPage() {
         {
             id: 2,
             date: new Date(2026, 0, 1),
-            type: "caro",
+            type: "tic-tac-toe-5",
             name: "Caro Championship 2026",
             description: "Compete in the new year championship!",
             status: "WAITING",
@@ -65,7 +65,7 @@ export default function MenuPage() {
         {
             id: 3,
             date: new Date(2024, 5, 15),
-            type: "caro",
+            type: "tic-tac-toe-5",
             name: "Caro test 2024",
             description: "Just a test tournament",
             status: "ENDED",
@@ -121,7 +121,7 @@ export default function MenuPage() {
                                 required
                                 style={{ width: "100%", padding: 6 }}
                             >
-                                <option value="caro">Caro</option>
+                                <option value="tic-tac-toe-5">Caro</option>
                             </select>
                         </div>
                         <div style={{ marginBottom: 12 }}>
@@ -162,7 +162,7 @@ export default function MenuPage() {
                         <div
                             key={tour.id}
                             className={styles.gameTourCard}
-                            onClick={() => nav(`/${tour.type}/${tour.id}`)}
+                            onClick={() => nav(`/caro/${tour.id}`)}
                         >
                             <div className={styles.gameTourHeader}>
                                 <span

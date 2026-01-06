@@ -1,0 +1,81 @@
+{
+    "p1": "3e19438d-1077-46d6-970f-ca918d748a8a.py",
+    "p2": "3e19438d-1077-46d6-970f-ca918d748a8a.py",
+    "board_size": 50,
+    "win_condition": 5,
+    "winner": 2,
+    "moves": [
+        {
+            "turn": 1,
+            "player": 1,
+            "row": 25,
+            "col": 25
+        },
+        {
+            "turn": 2,
+            "player": 2,
+            "row": 25,
+            "col": 24
+        },
+        {
+            "turn": 3,
+            "player": 1,
+            "row": 26,
+            "col": 25
+        },
+        {
+            "turn": 4,
+            "player": 2,
+            "row": 24,
+            "col": 25
+        },
+        {
+            "turn": 5,
+            "player": 1,
+            "row": 27,
+            "col": 25
+        },
+        {
+            "turn": 6,
+            "player": 2,
+            "row": 26,
+            "col": 23
+        },
+        {
+            "turn": 7,
+            "player": 1,
+            "row": 28,
+            "col": 25
+        },
+        {
+            "turn": 8,
+            "player": 2,
+            "row": 29,
+            "col": 25
+        },
+        {
+            "turn": 9,
+            "player": 1,
+            "row": 26,
+            "col": 24
+        },
+        {
+            "turn": 10,
+            "player": 2,
+            "row": 23,
+            "col": 26
+        },
+        {
+            "turn": 11,
+            "player": 1,
+            "row": 22,
+            "col": 27
+        },
+        {
+            "turn": 12,
+            "player": 2,
+            "row": 27,
+            "col": 22
+        }
+    ]
+}
