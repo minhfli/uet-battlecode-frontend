@@ -1,41 +1,38 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import PhaserWrapper from "../game/PhaserWrapper";
 import styles from "./CaroPage.module.css";
 import { BACKEND } from "../config/constant";
 
+type Submission = {
+    codeUrl: string;
+    submissionId: number;
+    handle: string;
+    language: number;
+    problemCode: number;
+};
 type User = {
-    id: number;
-    name: string;
-    wins: number;
-    eliminated: boolean;
+    active: boolean;
+    email: string;
+    handle: string;
 };
-
 type Match = {
-    id: number;
-    player1: number;
-    player2: number;
-    status: string; //"ONGOING" | "COMPLETED"
+    eventsUrl: string;
+    matchId: number;
+    problemCode: number;
+    status: string; // FINISHED | PENDING
+    tournamentId: number;
+    winner: User;
 };
-
-const users: User[] = [
-    { id: 1, name: "Alice", wins: 12, eliminated: false },
-    { id: 2, name: "Bob", wins: 9, eliminated: false },
-    { id: 3, name: "Charlie", wins: 3, eliminated: false },
-    { id: 4, name: "David", wins: 3, eliminated: true },
-];
-
-const matches: Match[] = [
-    { id: 1, player1: 1, player2: 2, status: "COMPLETED" },
-    { id: 2, player1: 3, player2: 4, status: "ONGOING" },
-];
 
 export default function CaroPage() {
     const { tourId } = useParams();
     const phaserRef = useRef<any>(null);
-    const [data, setData] = useState<any>(null);
     const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
     const [isMatching, setIsMatching] = useState(false);
+    const [users, setUsers] = useState<Submission[]>([]); // submission is user here
+    const [matchList, setMatchList] = useState<Match[]>([]);
+    const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
     const toggleUserSelection = (userId: number, eliminated: boolean) => {
         if (eliminated) return;
 
@@ -67,7 +64,7 @@ export default function CaroPage() {
                     problemCode: "tic-tac-toe-5",
                     submission1Id: user1,
                     submission2Id: user2,
-                    tournamaentId: tourId,
+                    tournamentId: parseInt(tourId || "0"),
                 }),
             });
 
@@ -76,10 +73,11 @@ export default function CaroPage() {
             }
 
             const result = await res.json();
-
+            console.log("Match created:", result);
             alert(
                 `Match created successfully!\nMatch ID: ${result.id ?? "N/A"}`
             );
+
             if (result.id) {
                 const res = await fetch(
                     `${BACKEND}/matches/${result.id}/start`,
@@ -90,16 +88,10 @@ export default function CaroPage() {
                 if (!res.ok) {
                     throw new Error("Start match failed");
                 }
+                const startData = await res.json();
+                console.log("Match started:", startData);
                 alert(`Match started successfully!`);
             }
-
-            // while (true) {
-            //     const res = await fetch(`${BACKEND}/matches/${result.id}`);
-            //     const statusData = await res.json();
-            //     if (statusData.status !== "COMPLETED") {
-            //         await new Promise((r) => setTimeout(r, 2000));
-            //     } else break;
-            // }
             setSelectedUsers([]);
         } catch (err) {
             alert("Failed to create match.");
@@ -108,17 +100,56 @@ export default function CaroPage() {
         }
     };
 
-    const loadFile = (e: any) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = () => {
-            const json = JSON.parse(reader.result as string);
-            setData(json);
+    const handleStartReplay = async () => {
+        // matches/id/replay
+        if (selectedMatch) {
+            const res = await fetch(
+                `${BACKEND}/matches/${selectedMatch.matchId}/replay`,
+                {
+                    method: "GET",
+                }
+            );
+            const json = await res.json();
             phaserRef.current?.loadReplay(json);
-            console.log("File loaded", json);
-        };
-        reader.readAsText(file);
+        }
     };
+
+    useEffect(() => {
+        console.log("CaroPage mounted with tourId:", tourId);
+        const fetchMatches = async () => {
+            try {
+                const response = await fetch(
+                    `${BACKEND}/tournaments/${tourId}/matches`,
+                    {
+                        method: "GET",
+                    }
+                );
+                const data = await response.json();
+                console.log("Fetched matches:", data);
+                setMatchList(data);
+            } catch (error) {
+                console.error("Error fetching matches:", error);
+            }
+        };
+        const fectchSubmissions = async () => {
+            try {
+                const response = await fetch(
+                    `${BACKEND}/tournaments/${tourId}/submissions`,
+                    {
+                        method: "GET",
+                    }
+                );
+                const data = await response.json();
+                console.log("Fetched submissions:", data);
+                setUsers(data);
+            } catch (error) {
+                console.error("Error fetching submissions:", error);
+            }
+        };
+        fectchSubmissions();
+
+        fetchMatches();
+    }, [tourId]);
 
     return (
         <div
@@ -137,19 +168,29 @@ export default function CaroPage() {
                 <div>
                     <h2>Caro Game Tournament #{tourId}</h2>
                 </div>
-                <div className={styles.caroMatchInfo}>
-                    <input type="file" accept=".json" onChange={loadFile} />
-                    <p>Player 1: {data && data.p1}</p>
-                    <p>Player 2: {data && data.p2}</p>
-                    <p>Winner: {data && data.winner}</p>
-                </div>
+                {selectedMatch && (
+                    <div className={styles.caroMatchInfo}>
+                        <p>Match ID: {selectedMatch.matchId}</p>
+                        <p>Winner: {selectedMatch.winner?.handle || "TBD"}</p>
+                        {selectedMatch.status === "FINISHED" && (
+                            <button onClick={handleStartReplay}>Replay</button>
+                        )}
+                    </div>
+                )}
+
                 <div className={styles.matchHistory}>
                     <h3>Match History</h3>
-                    {matches.map((match) => (
-                        <div key={match.id} className={styles.matchCard}>
-                            <div className={styles.matchId}>#{match.id}</div>
+                    {matchList.map((match) => (
+                        <div
+                            key={match.matchId}
+                            className={styles.matchCard}
+                            onClick={() => setSelectedMatch(match)}
+                        >
+                            <div className={styles.matchId}>
+                                {match.matchId}
+                            </div>
                             <div className={styles.matchPlayers}>
-                                Player {match.player1} vs Player {match.player2}
+                                {match.winner?.handle || "TBD"}
                             </div>
                             <div className={styles.matchStatus}>
                                 {match.status}
@@ -178,34 +219,32 @@ export default function CaroPage() {
                 <div className={styles.userList}>
                     {users.map((user, index) => (
                         <div
-                            className={`${styles.userCard}
-                            ${user.eliminated ? styles.eliminated : ""}
-                            ${
-                                selectedUsers.includes(user.id)
+                            key={index}
+                            className={`${
+                                styles.userCard
+                            }                            ${
+                                selectedUsers.includes(user.submissionId)
                                     ? styles.selected
                                     : ""
                             }
                         `}
                             onClick={() =>
-                                toggleUserSelection(user.id, user.eliminated)
+                                toggleUserSelection(user.submissionId, false)
                             }
                         >
                             <div className={styles.userRank}>#{index + 1}</div>
 
                             <div className={styles.userInfo}>
                                 <div className={styles.userName}>
-                                    {user.name}
+                                    {user.handle}
                                 </div>
                                 <div className={styles.userStats}>
+                                    {user.problemCode} - {user.language}
+                                </div>
+                                {/* <div className={styles.userStats}>
                                     Wins: <span>{user.wins}</span>
-                                </div>
+                                </div> */}
                             </div>
-
-                            {user.eliminated && (
-                                <div className={styles.userStatus}>
-                                    ELIMINATED
-                                </div>
-                            )}
                         </div>
                     ))}
                 </div>
