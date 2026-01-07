@@ -91,11 +91,14 @@ export default function CaroPage() {
                 const startData = await res.json();
                 console.log("Match started:", startData);
                 alert(`Match started successfully!`);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
             }
-            setSelectedUsers([]);
         } catch (err) {
             alert("Failed to create match.");
         } finally {
+            setSelectedUsers([]);
             setIsMatching(false);
         }
     };
@@ -124,9 +127,28 @@ export default function CaroPage() {
                         method: "GET",
                     }
                 );
-                const data = await response.json();
-                console.log("Fetched matches:", data);
+                let data = await response.json();
+                if (Array.isArray(data)) {
+                    data = data.sort((a, b) => b.matchId - a.matchId);
+                }
+                console.log("Fetched matches (sorted):", data);
                 setMatchList(data);
+                if (data && data.length > 0) {
+                    setSelectedMatch(data[0]);
+                    // Auto replay for the first match
+                    try {
+                        const res = await fetch(
+                            `${BACKEND}/matches/${data[0].matchId}/replay`,
+                            {
+                                method: "GET",
+                            }
+                        );
+                        const json = await res.json();
+                        phaserRef.current?.loadReplay(json);
+                    } catch (e) {
+                        console.error("Auto replay failed", e);
+                    }
+                }
             } catch (error) {
                 console.error("Error fetching matches:", error);
             }
@@ -134,7 +156,7 @@ export default function CaroPage() {
         const fectchSubmissions = async () => {
             try {
                 const response = await fetch(
-                    `${BACKEND}/tournaments/${tourId}/submissions`,
+                    `${BACKEND}/submissions?problemCode=tic-tac-toe-5`,
                     {
                         method: "GET",
                     }

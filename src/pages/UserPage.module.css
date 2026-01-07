@@ -1,3 +1,64 @@
 .tourItem {
     cursor: pointer;
+    padding: 12px 20px;
+    margin-bottom: 8px;
+    background: #f5f7fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    transition: box-shadow 0.2s, background 0.2s;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.tourItem:hover {
+    background: #e3e9f7;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-color: #b3b3b3;
+}
+
+.submitForm {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    padding: 32px 28px;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.submitForm h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #2d3a4a;
+}
+
+.submitForm input[type="file"] {
+    margin-bottom: 8px;
+}
+
+.submitForm select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #d0d0d0;
+}
+
+.submitForm button[type="submit"] {
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 0;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.submitForm button[type="submit"]:hover {
+    background: #2563eb;
 }
