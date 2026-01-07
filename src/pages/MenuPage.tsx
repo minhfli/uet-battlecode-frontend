@@ -28,17 +28,33 @@ export default function MenuPage() {
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         setSubmitting(true);
-        // TODO: Gọi API tạo tournament ở đây
         console.log("Tạo tournament:", form);
-        setTimeout(() => {
-            setSubmitting(false);
-            setForm({
-                name: "",
-                problemCode: "",
-                organizerHandle: "admin",
+        // TODO fix hardcode
+        form.organizerHandle = "Ire"; // hardcode for now
+        form.problemCode = "tic-tac-toe-5"; // hardcode for now
+        fetch(`${BACKEND}/tournaments/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(form),
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return res.json();
+            })
+            .then((data) => {
+                console.log("Tạo tournament thành công:", data);
+                alert("Tạo tournament thành công!");
+                nav(`/caro/${data.id}`);
+            })
+            .catch((err) => {
+                alert("Lỗi khi tạo tournament. Vui lòng thử lại.");
+                console.error("Lỗi khi tạo tournament:", err);
+                setSubmitting(false);
             });
-            alert("Tạo tournament thành công!");
-        }, 1000);
     };
     const [gameTours, setGameTours] = useState<GameTour[]>([]);
     useEffect(() => {
