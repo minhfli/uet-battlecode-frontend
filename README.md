@@ -7,21 +7,29 @@
 npm install
 ```
 
-3. Start the development server:
+3. Provide environment variables:
+
+Create a `.env` file in the root directory and add the following variables:
+
+```env
+VITE_BACKEND=...
+```
+
+4. Start the development server:
 
 ```bash
 npm run dev
 ```
 
-4. Open your browser and navigate to `http://localhost:5173`
+5. Open your browser and navigate to `http://localhost:5173`
 
-5. To build the project for production, run:
+6. To build the project for production, run:
 
 ```bash
 npm run build
 ```
 
-6. Serve the production build locally with:
+7. Serve the production build locally with:
 
 ```bash
 npm install -g serve
